@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +13,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +30,8 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static tech.spirit.woshield.Application_Class.address_location;
 
@@ -35,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
 
     private static final int REQUEST_PERMISSIONS = 100;
+
+    public final static int REQUEST_CODE = 10101;
+
     boolean boolean_permission;
     TextView tv_latitude, tv_longitude, tv_address,tv_area,tv_locality;
     SharedPreferences mPref;
@@ -43,8 +52,9 @@ public class MainActivity extends AppCompatActivity {
     Geocoder geocoder;
 
 
-
+    TimerTask timerTask;
     Button btnlocation,showOnMap;
+    boolean flagI;
 
 
 
@@ -57,13 +67,17 @@ public class MainActivity extends AppCompatActivity {
         btnlocation=findViewById(R.id.btnlocation);
         showOnMap=findViewById(R.id.show);
 
+        if (checkDrawOverlayPermission()) {
+            startService(new Intent(this, PowerButtonService.class));
+        }
+
         geocoder = new Geocoder(this, Locale.getDefault());
         mPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         medit = mPref.edit();
 
         fn_permission();
 
-
+        resheduleTime(5000);
 
         btnlocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +199,67 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
+    }
+
+
+
+
+    public boolean checkDrawOverlayPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (!Settings.canDrawOverlays(this)) {
+            /** if not construct intent to request permission */
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            /** request permission via start activity for result */
+            startActivityForResult(intent, REQUEST_CODE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.M)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            if (Settings.canDrawOverlays(this)) {
+                startService(new Intent(this, PowerButtonService.class));
+            }
+        }
+    }
+
+
+
+    public void resheduleTime( int duration){
+        Timer timer=new Timer();
+        timerTask=new MyTimerTask();
+        timer.schedule(timerTask,duration,duration);
+
+    }
+
+    public class MyTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+
+
+            if (Application_Class.COUNT >= 10) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "Send Alert", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                flagI = true;
+            } else {
+
+                flagI = false;
+            }
+            Application_Class.COUNT=0;
+        }
     }
 
 
