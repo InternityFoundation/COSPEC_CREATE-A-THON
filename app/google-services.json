@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "34044428987",
+    "firebase_url": "https://woshield.firebaseio.com",
+    "project_id": "woshield",
+    "storage_bucket": "woshield.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34044428987:android:164f0234acf059af",
+        "android_client_info": {
+          "package_name": "tech.spirit.woshield"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "34044428987-v46qj2898t8k5o6qprvg359c4d3o8t5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.spirit.woshield",
+            "certificate_hash": "35c8c7029c0fdda397f28be3056026c9f8f8c77b"
+          }
+        },
+        {
+          "client_id": "34044428987-i7vks2khdsuj7clhgq2p5jnsdvsvhqfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuNPZsUjFz5IttBDTeWphn5IttsgndyCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "34044428987-i7vks2khdsuj7clhgq2p5jnsdvsvhqfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
