@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements Help_Adapter.Item
 
     public final static int REQUEST_CODE = 10101;
 
+    boolean shareLocation=false;
+
     boolean boolean_permission;
     TextView tv_latitude, tv_longitude, tv_address,tv_area,tv_locality;
     SharedPreferences mPref;
@@ -165,6 +167,7 @@ public ArrayList<Help_Location> help;
             public void onClick(View v) {
 
                 if(boolean_permission) {
+                    shareLocation=true;
                     Intent intent = new Intent(getApplicationContext(), GoogleService.class);
                     startService(intent);
                 }
@@ -193,9 +196,14 @@ public ArrayList<Help_Location> help;
         showOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,MapsActivity.class));
+                if (shareLocation) {
+                    startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                } else {
+                    Toast.makeText(MainActivity.this, "Please first click on start sharing location ", Toast.LENGTH_LONG).show();
+                }
             }
-        });
+
+            });
 
 
 
@@ -245,6 +253,7 @@ public ArrayList<Help_Location> help;
             latitude = Double.valueOf(intent.getStringExtra("latutide"));
             longitude = Double.valueOf(intent.getStringExtra("longitude"));
             Application_Class.location=new LatLng(latitude,longitude);
+            Application_Class.yourLocation=new LatLng(latitude,longitude);
             Log.d("location",""+latitude+longitude);
             List<Address> addresses = null;
 
