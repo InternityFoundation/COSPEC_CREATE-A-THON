@@ -197,7 +197,9 @@ public ArrayList<Help_Location> help;
             @Override
             public void onClick(View v) {
                 if (shareLocation) {
-                    startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                    Intent intent=new Intent(MainActivity.this, MapsActivity.class);
+                    intent.putExtra("show map",0);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "Please first click on start sharing location ", Toast.LENGTH_LONG).show();
                 }
@@ -377,9 +379,15 @@ public ArrayList<Help_Location> help;
     @Override
     public void onItemClicked(int index) {
 
-        Toast.makeText(this, ""+help.get(index).getMessage(), Toast.LENGTH_SHORT).show();
-        Application_Class.location=new LatLng(help.get(index).getLati(),help.get(index).getLongi());
-        startActivity(new Intent(MainActivity.this,MapsActivity.class));
+        if (shareLocation) {
+            Toast.makeText(this, "" + help.get(index).getMessage(), Toast.LENGTH_SHORT).show();
+            Application_Class.location = new LatLng(help.get(index).getLati(), help.get(index).getLongi());
+            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            intent.putExtra("show map", 1);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Please first click on start sharing location", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
