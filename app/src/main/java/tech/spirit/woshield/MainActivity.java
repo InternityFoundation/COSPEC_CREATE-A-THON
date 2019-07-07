@@ -1,8 +1,12 @@
 package tech.spirit.woshield;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -26,10 +30,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -38,11 +46,16 @@ import java.util.TimerTask;
 import static tech.spirit.woshield.Application_Class.firebaseUser;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Help_Adapter.ItemClicked{
+
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+    RecyclerView.LayoutManager layoutManager;
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
+    private ChildEventListener childEventListener;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -62,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnlocation,showOnMap;
     boolean flagI;
 
-
+public ArrayList<Help_Location> help;
 
 
     @Override
@@ -70,11 +83,59 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        help=new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new Help_Adapter(MainActivity.this, help);
+        recyclerView.setAdapter(adapter);
+
+
         btnlocation=findViewById(R.id.btnlocation);
         showOnMap=findViewById(R.id.show);
 
+
+
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference().child("messages");
+
+        childEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Help_Location h=dataSnapshot.getValue(Help_Location.class);
+                help.add(h);
+                Log.i("data", ""+h.toString());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        databaseReference.addChildEventListener(childEventListener);
+
+
+
 
         if (checkDrawOverlayPermission()) {
             startService(new Intent(this, PowerButtonService.class));
@@ -124,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
         });
+
+
+
+
+
     }
 
     private void fn_permission() {
@@ -242,7 +308,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendData(){
         Help_Location help_location=new Help_Location(firebaseUser.getDisplayName(),firebaseUser.getEmail(),"I am in trouble " +
-                " Please someone Help Me ",Application_Class.location);
+                " Please someone Help Me ",latitude,longitude);
+
         databaseReference.push().setValue(help_location);
     }
 
@@ -252,6 +319,8 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(timerTask,duration,duration);
 
     }
+
+
 
     public class MyTimerTask extends TimerTask {
 
@@ -278,5 +347,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void onItemClicked(int index) {
+
+        Toast.makeText(this, ""+help.get(index).getMessage(), Toast.LENGTH_SHORT).show();
+    }
 
 }
