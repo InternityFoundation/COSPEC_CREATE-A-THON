@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,10 +35,14 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static tech.spirit.woshield.Application_Class.address_location;
+import static tech.spirit.woshield.Application_Class.firebaseUser;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -66,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
         btnlocation=findViewById(R.id.btnlocation);
         showOnMap=findViewById(R.id.show);
+
+        firebaseDatabase=FirebaseDatabase.getInstance();
+        databaseReference=firebaseDatabase.getReference().child("messages");
 
         if (checkDrawOverlayPermission()) {
             startService(new Intent(this, PowerButtonService.class));
@@ -231,6 +240,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void sendData(){
+        Help_Location help_location=new Help_Location(firebaseUser.getDisplayName(),firebaseUser.getEmail(),"I am in trouble " +
+                " Please someone Help Me ",Application_Class.location);
+        databaseReference.push().setValue(help_location);
+    }
 
     public void resheduleTime( int duration){
         Timer timer=new Timer();
@@ -249,6 +263,8 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        sendData();
                         Toast.makeText(MainActivity.this, "Send Alert", Toast.LENGTH_SHORT).show();
 
                     }
