@@ -10,12 +10,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
 
 import static tech.spirit.woshield.Application_Class.location;
+import static tech.spirit.woshield.Application_Class.yourLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,7 +26,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private GoogleMap mMap;
-
+    int flag=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+      flag=getIntent().getIntExtra("show map",0);
 
 
 
@@ -55,21 +58,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
 
-        if (mMap != null) {
-            CameraPosition camera = new CameraPosition.Builder()
-                    .target(location)
-                    .zoom(15)
-                    .bearing(0)
-                    .tilt(30)
-                    .build();
+        if (flag == 0) {
 
-            // Add a marker in Sydney and move the camera
-            //LatLng sydney = new LatLng(Application_Class.address_location.getLat(), Application_Class.address_location.getLang());
-            mMap.addMarker(new MarkerOptions().position(location).title("Location"));
-            // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+            if (mMap != null) {
+
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.you))
+                        .title("You")
+                        .position(yourLocation));
+
+                CameraPosition camera = new CameraPosition.Builder()
+                        .target(yourLocation)
+                        .zoom(15)
+                        .bearing(0)
+                        .tilt(30)
+                        .build();
+
+                // Add a marker in Sydney and move the camera
+                //LatLng sydney = new LatLng(Application_Class.address_location.getLat(), Application_Class.address_location.getLang());
+                //mMap.addMarker(new MarkerOptions().position(location).title("Location"));
+                // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+            }
+        } else if (flag == 1) {
+
+
+            if (mMap != null) {
+
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.you))
+                        .title("You")
+                        .position(yourLocation));
+
+                mMap.addMarker(new MarkerOptions()
+                        .title("Please Help Me")
+                        .position(location));
+
+                CameraPosition camera = new CameraPosition.Builder()
+                        .target(location)
+                        .zoom(15)
+                        .bearing(0)
+                        .tilt(30)
+                        .build();
+
+                // Add a marker in Sydney and move the camera
+                //LatLng sydney = new LatLng(Application_Class.address_location.getLat(), Application_Class.address_location.getLang());
+                //mMap.addMarker(new MarkerOptions().position(location).title("Location"));
+                // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+
+            }
         }
     }
 
