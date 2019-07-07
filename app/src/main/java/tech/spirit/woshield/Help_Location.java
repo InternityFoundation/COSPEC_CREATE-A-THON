@@ -7,16 +7,18 @@ public class Help_Location {
     private String userName,userEmail,message;
 //    private LatLng cordinates;
     private double lati,longi;
+    private String dateTime;
 
     Help_Location(){
     }
 
-    public Help_Location(String userName, String userEmail, String message, double lati, double longi) {
+    public Help_Location(String userName, String userEmail, String message, double lati, double longi, String dateTime) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.message = message;
         this.lati = lati;
         this.longi = longi;
+        this.dateTime = dateTime;
     }
 
     public String getUserName() {
@@ -57,5 +59,13 @@ public class Help_Location {
 
     public void setLongi(double longi) {
         this.longi = longi;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

@@ -37,7 +37,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements Help_Adapter.Item
     TimerTask timerTask;
     Button btnlocation,showOnMap;
     boolean flagI;
+    String formattedDate;
 
 public ArrayList<Help_Location> help;
 
@@ -83,6 +86,14 @@ public ArrayList<Help_Location> help;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => "+c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formattedDate = df.format(c.getTime());
+        Log.i("dATE ",formattedDate);
+//        // formattedDate have current date/time
+//        Toast.makeText(this, formattedDate, Toast.LENGTH_SHORT).show();
 
         help=new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
@@ -306,13 +317,20 @@ public ArrayList<Help_Location> help;
     }
 
 
-    public void sendData(){
-        Help_Location help_location=new Help_Location(firebaseUser.getDisplayName(),firebaseUser.getEmail(),"I am in trouble " +
-                " Please someone Help Me ",latitude,longitude);
+    public void sendData() {
 
-        databaseReference.push().setValue(help_location);
+        if (latitude != null && longitude != null) {
+
+            Help_Location help_location = new Help_Location(firebaseUser.getDisplayName(), firebaseUser.getEmail(), "I am in trouble " +
+                    " Please someone Help Me ", latitude, longitude, formattedDate);
+
+            Toast.makeText(MainActivity.this, " Alert messsage has been sent", Toast.LENGTH_SHORT).show();
+
+            databaseReference.push().setValue(help_location);
+        }else{
+            Toast.makeText(this, "First click on start sending location", Toast.LENGTH_SHORT).show();
+        }
     }
-
     public void resheduleTime( int duration){
         Timer timer=new Timer();
         timerTask=new MyTimerTask();
@@ -334,7 +352,6 @@ public ArrayList<Help_Location> help;
                     public void run() {
 
                         sendData();
-                        Toast.makeText(MainActivity.this, "Send Alert", Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -352,6 +369,8 @@ public ArrayList<Help_Location> help;
     public void onItemClicked(int index) {
 
         Toast.makeText(this, ""+help.get(index).getMessage(), Toast.LENGTH_SHORT).show();
+        Application_Class.location=new LatLng(help.get(index).getLati(),help.get(index).getLongi());
+        startActivity(new Intent(MainActivity.this,MapsActivity.class));
     }
 
 }
