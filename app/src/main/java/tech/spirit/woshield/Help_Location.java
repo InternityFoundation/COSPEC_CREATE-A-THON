@@ -5,13 +5,18 @@ import com.google.android.gms.maps.model.LatLng;
 public class Help_Location {
 
     private String userName,userEmail,message;
-    private LatLng cordinates;
+//    private LatLng cordinates;
+    private double lati,longi;
 
-    public Help_Location(String userName, String userEmail, String message, LatLng cordinates) {
+    Help_Location(){
+    }
+
+    public Help_Location(String userName, String userEmail, String message, double lati, double longi) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.message = message;
-        this.cordinates = cordinates;
+        this.lati = lati;
+        this.longi = longi;
     }
 
     public String getUserName() {
@@ -38,11 +43,19 @@ public class Help_Location {
         this.message = message;
     }
 
-    public LatLng getCordinates() {
-        return cordinates;
+    public double getLati() {
+        return lati;
     }
 
-    public void setCordinates(LatLng cordinates) {
-        this.cordinates = cordinates;
+    public void setLati(double lati) {
+        this.lati = lati;
+    }
+
+    public double getLongi() {
+        return longi;
+    }
+
+    public void setLongi(double longi) {
+        this.longi = longi;
     }
 }
