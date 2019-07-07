@@ -36,7 +36,7 @@ public class Help_Adapter extends RecyclerView.Adapter<Help_Adapter.ViewHolder>{
     }
 
     public class  ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvuserName,tvuserEmail,tvMessage;
+        TextView tvuserName,tvuserEmail,tvMessage,tvdateTime;
         ImageView ivLocation;
 
         public ViewHolder(@NonNull View itemView) {
@@ -45,7 +45,8 @@ public class Help_Adapter extends RecyclerView.Adapter<Help_Adapter.ViewHolder>{
             tvuserName=itemView.findViewById(R.id.tvUserName);
             tvuserEmail=itemView.findViewById(R.id.tvuserEmail);
             tvMessage=itemView.findViewById(R.id.tvMessage);
-            ivLocation=itemView.findViewById(R.id.ivMap);
+            tvdateTime=itemView.findViewById(R.id.tvdateTime);
+                    ivLocation=itemView.findViewById(R.id.ivMap);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,6 +76,7 @@ public class Help_Adapter extends RecyclerView.Adapter<Help_Adapter.ViewHolder>{
             viewHolder.tvuserName.setText(list.get(i).getUserName());
             viewHolder.tvuserEmail.setText(list.get(i).getUserEmail());
             viewHolder.tvMessage.setText(list.get(i).getMessage());
+            viewHolder.tvdateTime.setText(list.get(i).getDateTime());
         }
 
     }

@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity;
 
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,20 +57,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        CameraPosition camera=new CameraPosition.Builder()
-                .target(location)
-                .zoom(15)
-                .bearing(0)
-                .tilt(30)
-                .build();
+        if (mMap != null) {
+            CameraPosition camera = new CameraPosition.Builder()
+                    .target(location)
+                    .zoom(15)
+                    .bearing(0)
+                    .tilt(30)
+                    .build();
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(Application_Class.address_location.getLat(), Application_Class.address_location.getLang());
-        mMap.addMarker(new MarkerOptions().position(location).title("Location"));
-       // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+            // Add a marker in Sydney and move the camera
+            //LatLng sydney = new LatLng(Application_Class.address_location.getLat(), Application_Class.address_location.getLang());
+            mMap.addMarker(new MarkerOptions().position(location).title("Location"));
+            // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera));
+        }
     }
-
 
 
 

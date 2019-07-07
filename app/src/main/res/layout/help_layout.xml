@@ -10,6 +10,7 @@
     android:layout_marginRight="10dp"
     android:layout_marginBottom="5dp"
     android:backgroundTint="#73D324"
+    android:foregroundTint="#73d324"
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
@@ -65,6 +66,17 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     tools:text="UserEmail" />
+
+                <TextView
+                    android:id="@+id/tvdateTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="TextView"
+                    android:textColor="#316603"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
